@@ -99,8 +99,9 @@ const runWebOS = async (c, platform, target) => {
 
     const { device, hosted, maxErrorLength, debug } = c.program;
 
-    let isHosted = hosted || !getConfigProp(c, platform, 'bundleAssets');
+    let isHosted = !getConfigProp(c, platform, 'bundleAssets');
     if (debug) isHosted = false;
+    if (hosted) isHosted = true;
 
     const tDir = path.join(getAppFolder(c, platform), 'public');
     const tOut = path.join(getAppFolder(c, platform), 'output');

@@ -159,8 +159,9 @@ const runTizen = async (c, platform, target) => {
     const platformConfig = c.buildConfig.platforms[platform];
     const { hosted, debug } = c.program;
 
-    let isHosted = hosted || !getConfigProp(c, platform, 'bundleAssets');
+    let isHosted = !getConfigProp(c, platform, 'bundleAssets');
     if (debug) isHosted = false;
+    if (hosted) isHosted = true;
 
     if (!platformConfig) {
         throw new Error(`runTizen: ${chalk.grey(platform)} not defined in your ${chalk.white(c.paths.appConfig.config)}`);
