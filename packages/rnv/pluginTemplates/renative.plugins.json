@@ -1228,6 +1228,70 @@
                 }
             }
         },
+        "@react-native-firebase/app": {
+            "version": "6.2.0",
+            "ios": {
+                "podName": "RNFBApp",
+                "appDelegateImports": ["Firebase"],
+                "appDelegateMethods": {
+                    "application": {
+                        "didFinishLaunchingWithOptions": [
+                            "FirebaseApp.configure()"
+                        ]
+                    }
+                }
+            },
+            "tvos": {
+                "podName": "RNFBApp",
+                "appDelegateImports": ["Firebase"],
+                "appDelegateMethods": {
+                    "application": {
+                        "didFinishLaunchingWithOptions": [
+                            "FirebaseApp.configure()"
+                        ]
+                    }
+                }
+            },
+            "android": {
+                "package": "io.invertase.firebase.app.ReactNativeFirebaseAppPackage",
+                "build.gradle": {
+                    "buildscript": {
+                        "dependencies": [
+                            "classpath 'com.google.gms:google-services:4.2.0'"
+                        ]
+                    }
+                },
+                "app/build.gradle": {
+                    "apply": ["plugin: 'com.google.gms.google-services'"]
+                }
+            },
+            "androidtv": {
+                "package": "io.invertase.firebase.app.ReactNativeFirebaseAppPackage"
+            }
+        },
+        "@react-native-firebase/analytics": {
+            "version": "6.2.0",
+            "dependsOn": ["@react-native-firebase/app"],
+            "ios": {
+                "podName": "RNFBAnalytics"
+            },
+            "tvos": {
+                "podName": "RNFBAnalytics"
+            },
+            "android": {
+                "package": "io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage"
+            },
+            "androidtv": {
+                "package": "io.invertase.firebase.analytics.ReactNativeFirebaseAnalyticsPackage"
+            },
+            "web": {
+                "webpackConfig": {
+                    "customScripts": [
+                        "https://www.gstatic.com/firebasejs/7.6.2/firebase-analytics.js"
+                    ]
+                }
+            }
+        },
         "Firebase/Analytics": {
             "no-npm": true,
             "ios": {
