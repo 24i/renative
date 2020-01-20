@@ -447,7 +447,7 @@ const run = async (c, spawnC, skipStartBuilder) => {
             if (subCmdFn) {
                 await _execute(c, subCmdFn, cmd);
             } else {
-                //There is no subCommand function available so reset the key not to confuse pipe hooks
+                // There is no subCommand function available so reset the key not to confuse pipe hooks
                 c.subCommand = null;
                 await _execute(c, cmdFn, cmd);
             }
@@ -463,7 +463,7 @@ const run = async (c, spawnC, skipStartBuilder) => {
 };
 
 const _execute = async (c, cmdFn, cmd) => {
-    logTask(`_execute:${c.command}:${c.subCommand}`)
+    logTask(`_execute:${c.command}:${c.subCommand}`);
     if (cmd.platforms && !cmd.platforms.includes(c.platform)) {
         await _handleUnknownPlatform(c, cmd.platforms);
         return;
@@ -487,10 +487,11 @@ const _execute = async (c, cmdFn, cmd) => {
     }
 
     c.runtime.port = c.program.port || c.buildConfig?.defaults?.ports?.[c.platform] || PLATFORMS[c.platform]?.defaultPort;
+    const pipeEnabled = !NO_OP_COMMANDS.includes(c.command) && !SKIP_APP_CONFIG_CHECK.includes(c.command)
 
-    if (!NO_OP_COMMANDS.includes(c.command)) await executePipe(c, `${c.command}${subCmd}:before`);
+    if (pipeEnabled) await executePipe(c, `${c.command}${subCmd}:before`);
     await cmdFn(c);
-    if (!NO_OP_COMMANDS.includes(c.command)) await executePipe(c, `${c.command}${subCmd}:after`);
+    if (pipeEnabled) await executePipe(c, `${c.command}${subCmd}:after`);
 };
 
 
