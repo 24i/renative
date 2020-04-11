@@ -28,9 +28,10 @@ const defaultConfig = {
     watchFolders: [
         path.resolve(__dirname, '../../node_modules'),
         path.resolve(__dirname, './node_modules'),
-        path.resolve(__dirname, '../renative')
+        path.resolve(__dirname, '../'),
+        path.resolve(__dirname)
     ],
-    projectRoot: path.resolve(__dirname)
+    projectRoot: path.resolve(__dirname, 'entry')
 };
 
 module.exports = defaultConfig;

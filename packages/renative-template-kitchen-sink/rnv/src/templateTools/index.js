@@ -320,7 +320,12 @@ export const configureEntryPoints = async (c) => {
     // logTask('configureProject:check entry');
     // if (!fs.existsSync(c.paths.entryDir)) {
     //     logWarning(`Looks like your entry folder ${chalk.white(c.paths.entryDir)} is missing! Let's create one for you.`);
-    copyFolderContentsRecursiveSync(path.join(c.paths.rnv.dir, 'entry'), c.paths.entryDir);
+
+
+    const entryPath = path.join(c.paths.project.dir, 'entry');
+    console.log('LKDHDKJHD', entryPath);
+
+    copyFolderContentsRecursiveSync(path.join(c.paths.rnv.dir, 'entry'), entryPath);
     // }
 
     try {
@@ -331,7 +336,7 @@ export const configureEntryPoints = async (c) => {
         _parseSupportedPlatforms(c, (platform, plat) => {
             const source = path.join(c.paths.template.dir, `${plat.entryFile}.js`);
             const backupSource = path.join(c.paths.rnv.projectTemplate.dir, 'entry', `${plat.entryFile}.js`);
-            const dest = path.join(c.paths.project.dir, `${plat.entryFile}.js`);
+            const dest = path.join(entryPath, `${plat.entryFile}.js`);
             if (!fs.existsSync(dest)) {
                 if (!plat.entryFile) {
                     logWarning(`You missing entryFile for ${chalk.white(k)} platform in your ${chalk.white(c.paths.appConfig.config)}.`);

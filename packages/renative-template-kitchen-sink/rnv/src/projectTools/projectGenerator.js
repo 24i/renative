@@ -80,7 +80,7 @@ const _generateProject = async (c, data) => {
         paths: {
             appConfigsDir: './appConfigs',
             platformTemplatesDir: '$RNV_HOME/platformTemplates',
-            entryDir: './',
+            entryDir: './entry',
             platformAssetsDir: './platformAssets',
             platformBuildsDir: './platformBuilds',
             projectConfigDir: './projectConfig'
