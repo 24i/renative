@@ -10,7 +10,10 @@ import { isSystemWin } from '../utils';
 
 import { logDebug, logError, logWarning, logInfo } from './logger';
 
-export const copyFileSync = (source, target, skipOverride) => {
+export const copyFileSync = (
+    source,
+    target
+) => {
     logDebug('copyFileSync', source);
     let targetFile = target;
     // if target is a directory a new file with the same name will be created
@@ -22,7 +25,6 @@ export const copyFileSync = (source, target, skipOverride) => {
         }
     }
     if (fs.existsSync(targetFile)) {
-        if (skipOverride) return;
         const src = fs.readFileSync(source);
         const dst = fs.readFileSync(targetFile);
 
@@ -30,7 +32,10 @@ export const copyFileSync = (source, target, skipOverride) => {
     }
     logDebug('copyFileSync', source, targetFile, 'executed');
     try {
-        fs.writeFileSync(targetFile, fs.readFileSync(source));
+        fs.writeFileSync(
+            targetFile,
+            fs.readFileSync(source, 'utf8'),
+        );
     } catch (e) {
         console.log('copyFileSync', e);
     }
@@ -165,6 +170,15 @@ export const copyFolderRecursiveSync = (
     }
 };
 
+/**
+ * Copies contents of source folder to destination with optional parameter expansion.
+ * @param string source
+ * @param string target
+ * @param boolean convertSvg
+ * @param boolean skipPaths
+ * @param boolean skipOverride
+ * @param {pattern: Regex|string, overridge: string}[] injectObject - e.g. https://github.com/pavjacko/renative/blob/d2459aeb992adefb5cf546bbbf51e87cb0e9fdbf/packages/rnv/src/platformTools/web/index.js#L183
+ */
 export const copyFolderContentsRecursiveSync = (source, target, convertSvg = true, skipPaths, skipOverride, injectObject = null) => {
     logDebug('copyFolderContentsRecursiveSync', source, target, skipPaths);
 
@@ -185,7 +199,7 @@ export const copyFolderContentsRecursiveSync = (source, target, convertSvg = tru
                 } else if (injectObject !== null) {
                     copyFileWithInjectSync(curSource, targetFolder, skipOverride, injectObject);
                 } else {
-                    copyFileSync(curSource, targetFolder, skipOverride);
+                    copyFileSync(curSource, targetFolder);
                 }
             }
         });
