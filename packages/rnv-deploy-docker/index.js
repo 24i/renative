@@ -12,21 +12,22 @@ class Docker {
         const { logTask, logInfo } = require(path.join(this.rnvPath, 'dist/systemTools/logger'));
         const config = require(path.join(this.rnvPath, 'dist/config')).default;
         const { executeAsync } = require(path.join(this.rnvPath, 'dist/systemTools/exec'));
-        const { copyFolderRecursiveSync, copyFileSync, cleanFolder } = require(path.join(this.rnvPath, 'dist/systemTools/fileutils'));
+        const { copyFolderRecursiveSync, writeCleanFile, cleanFolder } = require(path.join(this.rnvPath, 'dist/systemTools/fileutils'));
 
         const { paths, runtime, platform, files } = config.getConfig();
         const projectBuilds = paths.project.builds.dir;
         const projectBuildWeb = path.join(projectBuilds, `${runtime.appId}_${platform}`);
-        const dockerDestination = path.join(projectBuildWeb, 'export', 'docker');
 
         const buildDir = 'dynamic';
+        const dockerDestination = path.join(projectBuildWeb, 'export', 'docker');
+        const dest = path.join(dockerDestination, buildDir);
 
         const dockerFile = path.join(__dirname, '../Dockerfile.dynamic');
 
         await cleanFolder(path.join(dockerDestination));
         copyFolderRecursiveSync(path.join(projectBuildWeb, buildDir), dockerDestination);
 
-        const copiedDockerFile = path.join(dockerDestination, 'Dockerfile');
+        const copiedDockerFile = path.join(dest, 'Dockerfile');
 
         const imageName = runtime.appId.toLowerCase();
         const appVersion = files.project.package.version;
@@ -40,10 +41,12 @@ class Docker {
             // Add dynamic health check
         }
 
-        copyFileSync(dockerFile, copiedDockerFile);
+        writeCleanFile(dockerFile, copiedDockerFile, [
+            { pattern: '{{BUILD_FOLDER}}', override: buildDir },
+        ]);
 
         logTask('docker:Dockerfile:build');
-        await executeAsync(`docker build -t ${imageName}:${appVersion} ${dockerDestination}`);
+        await executeAsync(`docker build -t ${imageName}:${appVersion} ${dest}`);
 
         logInfo(`Your Dockerfiles are located in ${dockerDestination}`);
     }
