@@ -9,4 +9,4 @@ WORKDIR /opt/app
 
 COPY . /opt/app
 
-CMD next start
+CMD cd /opt/app && ./node_modules/.bin/next start
