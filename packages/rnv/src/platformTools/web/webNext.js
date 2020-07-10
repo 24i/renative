@@ -13,7 +13,7 @@ import {
 import { logTask, logInfo, logWarning, logDebug } from '../../systemTools/logger';
 import { NEXT_CONFIG_NAME } from '../../constants';
 import { selectWebToolAndDeploy, selectWebToolAndExport } from '../../deployTools/webTools';
-import { writeCleanFile, copyFileSync, copyFolderRecursiveSync, fsWriteFileSync } from '../../systemTools/fileutils';
+import { writeCleanFile, cleanFolder, copyFileSync, copyFolderRecursiveSync, fsWriteFileSync } from '../../systemTools/fileutils';
 
 const configureNextIfRequired = async (c) => {
     const { platformTemplatesDirs, dir } = c.paths.project;
@@ -111,31 +111,32 @@ const _runWebBrowser = (c, platform, devServerHost, port, alreadyStarted) => new
 });
 
 // @TODO move this to a better place?
-const exportDynamic = (c) => {
+const exportDynamic = async (c) => {
     const { dir } = c.paths.project;
     const pagesDir = getConfigProp(c, c.platform, 'pagesDir');
     // @TODO remove/clean -> mkdirp this 'dynamic' folder
     const dest = `./platformBuilds/${c.runtime.appId}_${c.platform}/dynamic`;
+    await cleanFolder(dest);
     // @TODO merge these folder/files
     // @TODO add an exportOptions.additionalFiles config var?
     const nextFolders = [
-        `${dir}/node_modules`,
-        `${dir}/.next`,
+        'node_modules',
+        '.next',
         [pagesDir, `${dest}/pages`],
     ];
     const nextFiles = [
-        `${dir}/package.json`,
+        'package.json',
     ];
 
     nextFiles.forEach((file) => {
-        copyFileSync(file, dest);
+        copyFileSync(`${dir}/${file}`, `${dest}/${file}`);
     });
 
     nextFolders.forEach((file) => {
         if (Array.isArray(file)) {
             copyFolderRecursiveSync(file[0], file[1]);
         } else {
-            copyFolderRecursiveSync(file, dest);
+            copyFolderRecursiveSync(`${dir}/${file}`, `${dest}/${file}`);
         }
     });
 };
